@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NailOs — NailOs</title>
+
+<!-- Cargar librería de iconos Lucide -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #14171a;
+  --surface: #1b1f23;
+  --surface-2: #20252a;
+  --border: #2a2f34;
+  --text: #ececea;
+  --text-muted: #868d93;
+  --accent: #57e8c4;
+  --accent-2: #ff8a5b;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --display: 'Space Grotesk', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--text);
+  font-family: var(--sans);
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 2rem;
+  background: rgba(20,23,26,0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.logo-icon {
+  width: 64px;
+  height: 64px;
+  margin-right: 10px;
+  object-fit: contain;
+  border-radius: 4px;
+  flex: none;
+}
+
+nav { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.ws {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.ws em { font-style: normal; opacity: 0.55; }
+.ws:hover { color: var(--text); border-color: var(--border); transform: translateY(-1px); }
+.ws.active { color: var(--bg); background: var(--accent); }
+.ws.active em { color: var(--bg); opacity: 0.7; }
+
+main {
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: clamp(3.5rem, 10vw, 6rem) 1.5rem 6rem;
+}
+
+.hero { position: relative; }
+
+.glow {
+  position: absolute;
+  top: -100px;
+  left: -80px;
+  width: 380px;
+  height: 380px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(87,232,196,0.32), transparent 60%),
+    radial-gradient(circle at 70% 70%, rgba(255,138,91,0.24), transparent 60%);
+  filter: blur(60px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  margin-bottom: 1.75rem;
+  opacity: 0;
+  animation: rise 0.5s ease both;
+}
+.badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(87,232,196,0.15);
+}
+
+h1 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 6vw, 3.5rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  opacity: 0;
+  animation: rise 0.55s 0.08s ease both;
+}
+
+.lede {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 52ch;
+  margin: 0 0 1.5rem;
+  opacity: 0;
+  animation: rise 0.55s 0.16s ease both;
+}
+
+/* --- Estilos para las píldoras/badges con icono --- */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: rise 0.55s 0.20s ease both;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pill:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(87,232,196,0.1);
+}
+
+.pill i, .pill svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+/* ------------------------------------------------ */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.term {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1.1rem;
+  opacity: 0;
+  animation: rise 0.55s 0.24s ease both;
+}
+.term .prompt { color: var(--accent); }
+.cursor { color: var(--accent-2); animation: blink 1s step-start infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 3rem 0 1rem;
+}
+
+.specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+.spec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.spec-card.in-view { opacity: 1; transform: translateY(0); }
+.spec-card:hover { border-color: var(--accent); box-shadow: 0 10px 26px rgba(0,0,0,0.28); transform: translateY(-2px); }
+.spec-card svg { color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.spec-card .label { display: block; font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+.spec-card .value { font-family: var(--sans); font-weight: 500; font-size: 0.95rem; }
+
+.checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-family: var(--mono); font-size: 0.86rem; color: var(--text-muted);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.75rem 1rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.checklist li.in-view { opacity: 1; transform: translateY(0); }
+.checklist li.done { color: var(--text); }
+.checklist .box {
+  width: 17px; height: 17px; border-radius: 4px; border: 1px solid var(--border);
+  flex: none; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--bg);
+}
+.checklist li.done .box { background: var(--accent); border-color: var(--accent); }
+
+.team-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.1rem 1.3rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s ease;
+}
+.team-card.in-view { opacity: 1; transform: translateY(0); }
+.team-card:hover { border-color: var(--accent); }
+.avatar {
+  width: 42px; height: 42px; border-radius: 50%; flex: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.team-card .name { font-weight: 600; }
+.team-card .role { font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); }
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  h1, .lede, .term, .badge, .spec-card, .checklist li, .team-card, .cursor { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+@media (max-width: 480px) {
+  header { padding: 1rem 1.25rem; }
+  .ws em { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><img src="icon/icon.png" alt="" class="logo-icon" width="22" height="22">NailOs Linux</div>
+  <nav aria-label="Páginas">
+    <a href="index.html" class="ws active"><em>1</em>Inicio</a>
+    <a href="about.html" class="ws"><em>2</em>About</a>
+    <a href="photos.html" class="ws"><em>3</em>Photos</a>
+    <a href="descarga.html" class="ws"><em>4</em>Descarga</a>
+    <a href="equipo.html" class="ws"><em>5</em>Equipo</a> 
+  </nav>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="glow"></div>
+    <div class="badge"><span class="dot"></span>en desarrollo · desde septiembre de 2026</div>
+    <h1>NailOs</h1>
+    <h1>Distro con Sabor Argentino</h1>
+    <p class="lede">Una distro minimalista basada en Arch Linux, armada para correr liviana con Hyprland — pensada para hardware limitado, sin perder un escritorio moderno.</p>
+    
+    <!-- PÍLDORAS CON ICONOS NUEVAS -->
+    <div class="pill-group">
+      <div class="pill">
+        <i data-lucide="hexagon"></i>
+        <span>Basado en Arch</span>
+      </div>
+      <div class="pill">
+        <i data-lucide="hexagon"></i>
+        <span>Limine Bootloader</span>
+      </div>
+      <div class="pill">
+        <i data-lucide="code-2"></i>
+        <span>Hyprland / Caelestia Shell</span>
+      </div>
+      <div class="pill">
+        <i data-lucide="globe"></i>
+        <span>Español</span>
+      </div>
+    </div>
+
+    <div class="term"><span class="prompt">$</span><span id="term-text"></span><span class="cursor">▌</span></div>
+  </div>
+
+  <p class="section-label">especificaciones actuales</p>
+  <div class="specs">
+    <div class="spec-card reveal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      <span class="label">Base</span>
+      <span class="value">Arch Linux · rolling release</span>
+    </div>
+    <div class="spec-card reveal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="11" y1="10" x2="11" y2="20"/></svg>
+      <span class="label">Compositor</span>
+      <span class="value">Hyprland</span>
+    </div>
+    <div class="spec-card reveal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 3 21 8 12 13 3 8 12 3"/><polyline points="3 13 12 18 21 13"/></svg>
+      <span class="label">Shell</span>
+      <span class="value">Caelestia</span>
+    </div>
+    <div class="spec-card reveal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><line x1="12" y1="13" x2="12" y2="21"/></svg>
+      <span class="label">Paquetes</span>
+      <span class="value">Pacman + AUR</span>
+    </div>
+    <div class="spec-card reveal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="11"/><path d="M7 6a7 7 0 1 0 10 0"/></svg>
+      <span class="label">Bootloader</span>
+      <span class="value">Limine</span>
+    </div>
+    <div class="spec-card reveal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><polyline points="7 11 12 16 17 11"/><line x1="5" y1="20" x2="19" y2="20"/></svg>
+      <span class="label">Instalador</span>
+      <span class="value">Calamares</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>nailos — proyecto en desarrollo desde septiembre de 2026</footer>
+
+<script>
+(function() {
+  var text = "Estado: en construcción desde Septiembre";
+  var el = document.getElementById('term-text');
+  var i = 0;
+  function type() {
+    if (i <= text.length) {
+      el.textContent = text.slice(0, i);
+      i++;
+      setTimeout(type, 38);
+    }
+  }
+  type();
+})();
+
+document.querySelectorAll('.reveal').forEach(function(el, idx) {
+  el.style.transitionDelay = (idx * 70) + 'ms';
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  io.observe(el);
+});
+
+// Renderizar los iconos de Lucide al cargar la página
+if (window.lucide) {
+  lucide.createIcons();
+}
+</script>
+
+</body>
+</html>
+

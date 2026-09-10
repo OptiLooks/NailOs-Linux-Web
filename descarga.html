@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descarga — NailOs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #14171a;
+  --surface: #1b1f23;
+  --surface-2: #20252a;
+  --border: #2a2f34;
+  --text: #ececea;
+  --text-muted: #868d93;
+  --accent: #57e8c4;
+  --accent-2: #ff8a5b;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --display: 'Space Grotesk', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--text);
+  font-family: var(--sans);
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 2rem;
+  background: rgba(20,23,26,0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.logo-icon {
+  width: 64px;
+  height: 64px;
+  margin-right: 10px;
+  object-fit: contain;
+  border-radius: 4px;
+  flex: none;
+}
+
+nav { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.ws {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.ws em { font-style: normal; opacity: 0.55; }
+.ws:hover { color: var(--text); border-color: var(--border); transform: translateY(-1px); }
+.ws.active { color: var(--bg); background: var(--accent); }
+.ws.active em { color: var(--bg); opacity: 0.7; }
+
+main {
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: clamp(3.5rem, 10vw, 6rem) 1.5rem 6rem;
+}
+
+.hero { position: relative; }
+
+.glow {
+  position: absolute;
+  top: -100px;
+  left: -80px;
+  width: 380px;
+  height: 380px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(87,232,196,0.32), transparent 60%),
+    radial-gradient(circle at 70% 70%, rgba(255,138,91,0.24), transparent 60%);
+  filter: blur(60px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  margin-bottom: 1.75rem;
+  opacity: 0;
+  animation: rise 0.5s ease both;
+}
+.badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(87,232,196,0.15);
+}
+
+h1 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 6vw, 3.5rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  opacity: 0;
+  animation: rise 0.55s 0.08s ease both;
+}
+
+.lede {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 52ch;
+  margin: 0 0 2rem;
+  opacity: 0;
+  animation: rise 0.55s 0.16s ease both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.term {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1.1rem;
+  opacity: 0;
+  animation: rise 0.55s 0.24s ease both;
+}
+.term .prompt { color: var(--accent); }
+.cursor { color: var(--accent-2); animation: blink 1s step-start infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 3rem 0 1rem;
+}
+
+.specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+.spec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.spec-card.in-view { opacity: 1; transform: translateY(0); }
+.spec-card:hover { border-color: var(--accent); box-shadow: 0 10px 26px rgba(0,0,0,0.28); transform: translateY(-2px); }
+.spec-card svg { color: var(--accent); margin-bottom: 0.65rem; display: block; }
+.spec-card .label { display: block; font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+.spec-card .value { font-family: var(--sans); font-weight: 500; font-size: 0.95rem; }
+
+.checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-family: var(--mono); font-size: 0.86rem; color: var(--text-muted);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.75rem 1rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.checklist li.in-view { opacity: 1; transform: translateY(0); }
+.checklist li.done { color: var(--text); }
+.checklist .box {
+  width: 17px; height: 17px; border-radius: 4px; border: 1px solid var(--border);
+  flex: none; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--bg);
+}
+.checklist li.done .box { background: var(--accent); border-color: var(--accent); }
+
+.team-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.1rem 1.3rem;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s ease;
+}
+.team-card.in-view { opacity: 1; transform: translateY(0); }
+.team-card:hover { border-color: var(--accent); }
+.avatar {
+  width: 42px; height: 42px; border-radius: 50%; flex: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.team-card .name { font-weight: 600; }
+.team-card .role { font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); }
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  h1, .lede, .term, .badge, .spec-card, .checklist li, .team-card, .cursor { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+@media (max-width: 480px) {
+  header { padding: 1rem 1.25rem; }
+  .ws em { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><img src="icon/icon.png" alt="" class="logo-icon" width="22" height="22">nailos</div>
+  <nav aria-label="Páginas">
+    <a href="index.html" class="ws"><em>1</em>Inicio</a>
+    <a href="about.html" class="ws"><em>2</em>About</a>
+    <a href="photos.html" class="ws"><em>3</em>Photos</a>
+    <a href="descarga.html" class="ws active"><em>3</em>Descarga</a>
+    <a href="equipo.html" class="ws"><em>4</em>Equipo</a>
+  </nav>
+</header>
+<main>
+  <div class="hero">
+    <div class="glow"></div>
+    <div class="badge"><span class="dot"></span>descarga</div>
+    <h1>Descarga</h1>
+    <p class="lede">Todavía no hay una ISO para descargar. Este es el estado real del avance hasta ahora:</p>
+  </div>
+
+  <ul class="checklist">
+    <li class="reveal done"><span class="box">✓</span>Base y stack definidos (Arch + Hyprland + Caelestia)</li>
+    <li class="reveal done"><span class="box">✓</span>Instalador elegido (Calamares)</li>
+    <li class="reveal done"><span class="box">✓</span>Bootloader elegido (Limine)</li>
+    <li class="reveal"><span class="box">✓</span>Script de archiso para generar la ISO</li>
+    <li class="reveal"><span class="box">✓</span>Recorte de paquetes base (optimización)</li>
+    <li class="reveal"><span class="box">✓</span>ISO de prueba descargable</li>
+  </ul>
+
+</main>
+<footer>nailos — proyecto en desarrollo desde septiembre de 2026</footer>
+<script>
+document.querySelectorAll('.reveal').forEach(function(el, idx) {
+  el.style.transitionDelay = (idx * 70) + 'ms';
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  io.observe(el);
+});
+</script>
+</body>
+</html>
